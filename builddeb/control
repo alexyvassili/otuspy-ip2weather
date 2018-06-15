@@ -1,0 +1,12 @@
+Package: ip2weather
+Version: 0.1
+Architecture: amd64
+Maintainer: Alexy Vassili <escantor@gmail.com>
+Depends: nginx (>= 1.10.3-1+deb9u1), python3 (>= 3.5.3-1), python3-venv (>= 3.5.3-1), python3-dev (>= 3.5.3-1)
+Suggests: ip2weather
+Section: web
+Priority: standard
+Multi-Arch: foreign
+Homepage: http://https://github.com/alexyvassili/otuspy-ip2weather/
+Description: Simply uwsgi daemon, show weather by location based on ip-address
+ This is simply wsgi daemon, show weather by location based on ip-address

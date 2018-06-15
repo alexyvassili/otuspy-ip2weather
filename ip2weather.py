@@ -107,9 +107,18 @@ def application(env, start_response):
     status, response_body = get_response(env)
 
     if '200' in status:
-        logging.info(f"Request URI: {uri} -- Status: {status}, Response length: {len(response_body)}")
+        logging.info("Request URI: {uri} -- Status: {status}, Response length: {length}".format(
+            uri=uri,
+            status=status,
+            length=len(response_body)
+
+        ))
     else:
-        logging.warning(f"Request URI: {uri} -- Status: {status}, Response: {response_body}")
+        logging.warning("Request URI: {uri} -- Status: {status}, Response: {response_body}".format(
+            uri=uri,
+            status=status,
+            response_body=response_body
+        ))
 
     response_headers = [
         ('Content-Type', 'application/json'),

@@ -1,0 +1,16 @@
+#!/bin/sh -e
+echo "Creating virtual environment..."
+mkdir -p /var/pyvenvs/ip2weather
+python3 -m venv /var/pyvenvs/ip2weather
+echo "Upgrade pip..."
+/var/pyvenvs/ip2weather/bin/pip3 install --upgrade pip
+echo "Set up from requirements.txt..."
+/var/pyvenvs/ip2weather/bin/python3 -m pip install -r /usr/local/ip2weather/requirements.txt
+echo "Installing uwsgi..."
+/var/pyvenvs/ip2weather/bin/python3 -m pip install uwsgi
+
+ln -s /etc/nginx/sites-available/ip2weather /etc/nginx/sites-enabled/ip2weather
+systemctl daemon-reload
+systemctl enable ip2weather
+systemctl start ip2weather
+systemctl restart nginx

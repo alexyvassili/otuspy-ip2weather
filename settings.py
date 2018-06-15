@@ -2,9 +2,9 @@ import os
 
 PROJECT = "ip2weather"
 
-PROJECT_DIR = f"/usr/local/{PROJECT}"
-LOG_DIR = f"/var/log/{PROJECT}/"
-SETTINGS_DIR = f"/usr/local/etc/{PROJECT}/"
+PROJECT_DIR = "/usr/local/{PROJECT}".format(PROJECT=PROJECT)
+LOG_DIR = "/var/log/{PROJECT}/".format(PROJECT=PROJECT)
+SETTINGS_DIR = "/usr/local/etc/{PROJECT}/".format(PROJECT=PROJECT)
 
 STATUS_OK = '200 OK'
 STATUS_ERROR = '400'

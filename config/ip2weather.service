@@ -4,7 +4,7 @@ After=netwok.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/uwsgi --ini /usr/local/etc/ip2weather/ip2weather.ini
+ExecStart=/var/pyvenvs/ip2weather/bin/uwsgi --ini /usr/local/etc/ip2weather/ip2weather.ini
 WorkingDirectory=/usr/local/ip2weather
 KillSignal=SIGQUIT
 User=root

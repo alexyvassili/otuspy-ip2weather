@@ -1,0 +1,5 @@
+#!/bin/sh -e
+rm -f /etc/nginx/sites-enabled/ip2weather
+rm -rf /var/pyvenvs/ip2weather
+systemctl daemon-reload
+systemctl restart nginx
