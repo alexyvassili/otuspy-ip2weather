@@ -1,0 +1,11 @@
+server {
+    listen 80;
+    server_name ip2weather.alexyvassili.me www.ip2weather.alexyvassili.me;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+
+    location / {
+        include         uwsgi_params;
+        uwsgi_pass      unix:/var/run/uwsgi/ip2weather.sock;
+    }
+}

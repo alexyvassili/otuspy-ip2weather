@@ -1,11 +1,26 @@
+import sys
+import os
+import logging
+
+sys.path.append('/usr/local/etc/ip2weather')
+
 import requests
 import json
 import socket
 import time
 
-from settings import STATUS_OK, STATUS_ERROR, MAX_RETRIES, IP_INFO_URL, WEATHER_URL
-from secrets import WEATHER_API_KEY
+from settings import STATUS_OK, STATUS_ERROR, MAX_RETRIES, IP_INFO_URL, WEATHER_URL, LOG_DIR
 
+try:
+    from settings import WEATHER_API_KEY
+except ImportError:
+    from secrets import WEATHER_API_KEY
+
+LOGGING_FORMAT = '[%(asctime)s] %(levelname).1s %(message)s'
+LOGGING_LEVEL = logging.INFO
+LOGGING_FILE = os.path.join(LOG_DIR, 'ip2weather.log')
+logging.basicConfig(format=LOGGING_FORMAT, datefmt='%Y.%m.%d %H:%M:%S', level=LOGGING_LEVEL,
+                            filename=LOGGING_FILE)
 
 def get(url, params=None, timeout=5, backoff_factor=0.3):
     if not params:
@@ -47,20 +62,26 @@ def is_valid(ip):
         return False
 
 
-def get_request_ip(env):
-    uri = env.get("REQUEST_URI", "")
+def get_request_ip(uri):
     ip = uri.split('/')[-1]
     return ip
 
 
+def get_request_uri(env):
+    uri = env.get("REQUEST_URI", "")
+    return uri
+
+
 def get_response(env):
-    ip = get_request_ip(env)
+    uri = get_request_uri(env)
+    ip = get_request_ip(uri)
+
     if not is_valid(ip):
         return STATUS_ERROR, json.dumps({"error": "Invalid IP address"})
 
     if not WEATHER_API_KEY:
         return STATUS_ERROR, json.dumps({"error": "NO WEATHER_APPID"})
-    
+
     try:
         ip_info = get_ip_info(ip)
         lat, lon = ip_info["loc"].split(",")
@@ -75,27 +96,25 @@ def get_response(env):
     description = weather_data["weather"][0]["description"]
 
     return STATUS_OK, json.dumps({
-                        "city": city,
-                        "temp": temp,
-                        "conditions": description
-                        })
+        "city": city,
+        "temp": temp,
+        "conditions": description
+    })
 
 
 def application(env, start_response):
+    uri = get_request_uri(env)
     status, response_body = get_response(env)
+
+    if '200' in status:
+        logging.info(f"Request URI: {uri} -- Status: {status}, Response length: {len(response_body)}")
+    else:
+        logging.warning(f"Request URI: {uri} -- Status: {status}, Response: {response_body}")
+
     response_headers = [
         ('Content-Type', 'application/json'),
         ('Content-Length', str(len(response_body)))
     ]
 
     start_response(status, response_headers)
-    return [response_body]
-
-
-print(
-    get_response({
-        # 'REQUEST_URI': 'http://localhost/ip2w/176.14.221.123',
-        'REQUEST_URI': 'http://localhost/ip2w/195.208.131.1',
-    })
-)
-
+    return [response_body.encode()]

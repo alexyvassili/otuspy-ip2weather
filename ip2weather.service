@@ -1,13 +1,15 @@
 [Unit]
-Description=uWSGI Emperor service
+Description=Ip2weather daemon
+After=netwok.target
 
 [Service]
-ExecStartPre=/bin/bash -c 'mkdir -p /var/run/uwsgi; chown alexey:www-data /var/run/uwsgi'
-ExecStart=/usr/local/bin/uwsgi --emperor /etc/uwsgi/sites
-Restart=always
+Type=simple
+ExecStart=/usr/local/bin/uwsgi --ini /usr/local/etc/ip2weather/ip2weather.ini
+WorkingDirectory=/usr/local/ip2weather
 KillSignal=SIGQUIT
-Type=notify
-NotifyAccess=all
+User=root
+MemoryLimit=512M
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
