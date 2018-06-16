@@ -1,8 +1,15 @@
 import os
+import sys
 from fabric.state import env
 from fabric.api import local
 
 from settings import PROJECT, PROJECT_DIR, SETTINGS_DIR, LOG_DIR
+
+try:
+    from secrets import WEATHER_API_KEY
+except ImportError:
+    print("Error: variable 'WEATHER_API_KEY' not found in secrets.py")
+    sys.exit(1)
 
 
 def build():
